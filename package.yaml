@@ -1,0 +1,32 @@
+name:                haddock-perf
+version:             0.1.0.0
+#synopsis:
+#description:
+homepage:            https://github.com/githubuser/haddock-perf#readme
+license:             BSD3
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2017 Author name here
+category:            Web
+extra-source-files:
+- README.md
+
+dependencies:
+- base >= 4.7 && < 5
+- lens
+- text
+- directory
+- filepath
+- containers
+- bifunctors
+
+default-extensions:
+- LambdaCase
+- ViewPatterns
+- RecordWildCards
+- TupleSections
+
+executables:
+  haddock-perf:
+    source-dirs:      src
+    main:             Main.hs

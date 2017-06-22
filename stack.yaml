@@ -1,0 +1,9 @@
+resolver: lts-8.19
+packages:
+- '.'
+extra-deps:
+- containers-0.5.10.2
+- lens-4.15.3
+flags: {}
+
+extra-package-dbs: []

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+export GHC_TOP_DIR="$(pwd)/../8.2"
+
+export HADDOCK_EXE=/opt/ghc/8.0.2/bin/haddock
+
+export HADDOCK_SHIM_OUTPUT_FILE=`pwd`/haddock-perf-8.0.2.out
+rm $HADDOCK_SHIM_OUTPUT_FILE
+cabal sandbox init
+cabal install "$@" --enable-documentation --keep-going --with-ghc=/opt/ghc/8.0.2/bin/ghc --with-haddock=`pwd`/haddock-shim
+cabal sandbox delete
+
+export HADDOCK_EXE=${GHC_TOP_DIR}/inplace/bin/haddock
+
+for commit in f6f0fd9 7bb8472 42638f7; do
+  export HADDOCK_SHIM_OUTPUT_FILE=`pwd`/haddock-perf-${commit}.out
+  rm $HADDOCK_SHIM_OUTPUT_FILE
+  pushd $GHC_TOP_DIR
+  pushd utils/haddock
+  git checkout $commit
+  popd
+  make -j
+  echo "$(pwd)/compiler" >> $HADDOCK_SHIM_OUTPUT_FILE
+  cat compiler/stage2/haddock.t >> $HADDOCK_SHIM_OUTPUT_FILE
+  echo "===" >> $HADDOCK_SHIM_OUTPUT_FILE
+  echo "$(pwd)/libraries/base" >> $HADDOCK_SHIM_OUTPUT_FILE
+  cat libraries/base/dist-install/haddock.t >> $HADDOCK_SHIM_OUTPUT_FILE
+  echo "===" >> $HADDOCK_SHIM_OUTPUT_FILE
+  echo "$(pwd)/libraries/Cabal" >> $HADDOCK_SHIM_OUTPUT_FILE
+  cat libraries/Cabal/Cabal/dist-install/haddock.t >> $HADDOCK_SHIM_OUTPUT_FILE
+  popd
+  cabal sandbox init
+  cabal install --enable-documentation --keep-going --with-ghc=${GHC_TOP_DIR}/inplace/bin/ghc-stage2 --with-haddock=`pwd`/haddock-shim "$@"
+  cabal sandbox delete
+done
