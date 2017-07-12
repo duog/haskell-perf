@@ -1,2 +1,6 @@
 .stack-work
 *.out
+/ghc-shim.lock
+/haddock-shim.lock
+.cabal-sandbox
+cabal.sandbox.config

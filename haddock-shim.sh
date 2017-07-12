@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 (
 flock -s 200
 $HADDOCK_EXE "$@" +RTS -N1 -tstats --machine-readable -RTS

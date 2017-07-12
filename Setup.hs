@@ -1,2 +1,8 @@
 import Distribution.Simple
-main = defaultMain
+import Sqlite.Ext.Setup
+
+main :: IO ()
+main = defaultMainWithHooks
+  simpleUserHooks
+    { confHook = sqliteExtensionFunctionsConfHook "data/sqliteextensionslib"
+    }

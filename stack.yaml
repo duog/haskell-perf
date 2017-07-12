@@ -1,9 +1,11 @@
 resolver: lts-8.19
 packages:
-- '.'
+- .
+- sqlite-extension-functions
 extra-deps:
-- containers-0.5.10.2
 - lens-4.15.3
-flags: {}
-
+- optparse-applicative-0.14.0.0
+- direct-sqlite-2.3.20
+- MemoTrie-0.6.8
+- vector-0.12.0.1
 extra-package-dbs: []

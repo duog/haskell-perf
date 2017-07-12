@@ -1,4 +1,4 @@
-name:                haddock-perf
+name:                measure-ghc
 version:             0.1.0.0
 #synopsis:
 #description:
@@ -8,25 +8,59 @@ author:              Author name here
 maintainer:          example@example.com
 copyright:           2017 Author name here
 category:            Web
+
 extra-source-files:
 - README.md
-
-dependencies:
-- base >= 4.7 && < 5
-- lens
-- text
-- directory
-- filepath
-- containers
-- bifunctors
 
 default-extensions:
 - LambdaCase
 - ViewPatterns
 - RecordWildCards
 - TupleSections
+- DeriveGeneric
+- PartialTypeSignatures
+- DeriveFunctor
+- TypeApplications
+- ParallelListComp
+- MultiWayIf
 
+data-files:
+- data/*
+
+dependencies:
+  base
+
+library:
+  source-dirs: lib
+  dependencies:
+  - lens
+  - text
+  - directory
+  - filepath
+  - containers
+  - bifunctors
+  - optparse-applicative
+  - attoparsec
+  - safe-exceptions
+  - sqlite-simple
+  - sqlite-extension-functions
+  - direct-sqlite
+  - cassava
+  - bytestring
+  - ansi-wl-pprint
+  - MemoTrie
+  - mtl
+  - vector
+  - terminal-size
+  - errors
+  - transformers
+  - reflection
+  other-modules:
+  - Paths_measure_ghc
 executables:
-  haddock-perf:
+  measure-ghc:
     source-dirs:      src
     main:             Main.hs
+    dependencies:
+    - measure-ghc
+    - base
