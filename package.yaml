@@ -73,6 +73,7 @@ library:
   - stackage-curator
   - Cabal
   - time
+  - generic-lens-labels
   other-modules:
   - Paths_measure_ghc
 

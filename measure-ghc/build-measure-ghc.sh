@@ -14,7 +14,7 @@ STACK_DIR=$WORKDIR/inner.stack
 MEASURE_GHC_SRC_DIR=$ROOT
 BINDIST_DIR=$ROOT/bindists
 FOUNDATION_STACK_WORK_DIR=$WORKDIR/inner.foundatation.stack-work
-GENERICLENS_STACK_WORK_DIR=$WORKDIR/inner.generic-lens.stack-work
+GENERICLENSLABELS_STACK_WORK_DIR=$WORKDIR/inner.generic-lens-labels.stack-work
 STACKAGECURATOR_STACK_WORK_DIR=$WORKDIR/inner.stackage-curator.stack-work
 SQLITEEXTENSIONFUNCTIONS_STACK_WORK_DIR=$WORKDIR/inner.sqlite-extension-functions.stack-work
 mkdir -p \
@@ -26,14 +26,14 @@ mkdir -p \
   "$MEASURE_GHC_SRC_DIR/.stack-work" \
   "$MEASURE_GHC_SRC_DIR/foundation/.stack-work" \
   "$MEASURE_GHC_SRC_DIR/stackage-curator/.stack-work" \
-  "$MEASURE_GHC_SRC_DIR/generic-lens/.stack-work" \
+  "$MEASURE_GHC_SRC_DIR/generic-lens-labels/.stack-work" \
   "$MEASURE_GHC_SRC_DIR/sqlite-extension-functions/.stack-work" \
   "$FOUNDATION_STACK_WORK_DIR" \
-  "$GENERICLENS_STACK_WORK_DIR" \
+  "$GENERICLENSLABELS_STACK_WORK_DIR" \
   "$STACKAGECURATOR_STACK_WORK_DIR" \
   "$SQLITEEXTENSIONFUNCTIONS_STACK_WORK_DIR"
 
-ARGS_COMMON="--rm -v $BINDIST_DIR:$HOME/bindists:ro -v $WORKDIR:$HOME/work -w $HOME -v $MEASURE_GHC_SRC_DIR:$HOME/measure-ghc:ro -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /etc/sudoers:/etc/sudoers:ro -v $CABAL_DIR:$HOME/.cabal:rw -v $STACK_DIR:$HOME/.stack:rw -v $STACK_WORK_DIR:$HOME/measure-ghc/.stack-work:rw -v $SQLITEEXTENSIONFUNCTIONS_STACK_WORK_DIR:$HOME/measure-ghc/sqlite-extension-functions/.stack-work:rw -v $STACKAGECURATOR_STACK_WORK_DIR:$HOME/measure-ghc/stackage-curator/.stack-work:rw -v $FOUNDATION_STACK_WORK_DIR:$HOME/measure-ghc/foundation/.stack-work:rw -v $GENERICLENS_STACK_WORK_DIR:$HOME/measure-ghc/generic-lens/.stack-work:rw"
+ARGS_COMMON="--rm -v $BINDIST_DIR:$HOME/bindists:ro -v $WORKDIR:$HOME/work -w $HOME -v $MEASURE_GHC_SRC_DIR:$HOME/measure-ghc -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /etc/sudoers:/etc/sudoers:ro -v $CABAL_DIR:$HOME/.cabal:rw -v $STACK_DIR:$HOME/.stack:rw -v $STACK_WORK_DIR:$HOME/measure-ghc/.stack-work:rw -v $SQLITEEXTENSIONFUNCTIONS_STACK_WORK_DIR:$HOME/measure-ghc/sqlite-extension-functions/.stack-work:rw -v $STACKAGECURATOR_STACK_WORK_DIR:$HOME/measure-ghc/stackage-curator/.stack-work:rw -v $FOUNDATION_STACK_WORK_DIR:$HOME/measure-ghc/foundation/.stack-work:rw -v $GENERICLENSLABELS_STACK_WORK_DIR:$HOME/measure-ghc/generic-lens-labels/.stack-work:rw"
 
 MEASURE_GHC_BINDIST="ghc-8.3.20170813-x86_64-unknown-linux.tar.xz"
 # Do the rest of the pre-build actions:

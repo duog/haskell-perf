@@ -6,3 +6,6 @@
 	path = stackage-curator
 	url = https://github.com/duog/stackage-curator
 	ignore = none
+[submodule "generic-lens-labels"]
+	path = generic-lens-labels
+	url = https://github.com/duog/generic-lens-labels

@@ -16,7 +16,7 @@ packages:
     git: https://github.com/fpco/store
     commit: 07f6a2bea50ba1b7aee9fda46b2006119fbe390f
   extra-dep: true
-- generic-lens
+- generic-lens-labels
 extra-deps:
 - newtype-generics-0.5
 # - lens-4.15.3
@@ -29,5 +29,6 @@ extra-deps:
 - store-core-0.4.1
 - th-utilities-0.2.0.1
 - directory-1.3.1.1
+- generic-lens-0.4.0.0
 extra-package-dbs: []
 allow-newer: true

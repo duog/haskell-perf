@@ -61,6 +61,7 @@ library
     , stackage-curator
     , Cabal
     , time
+    , generic-lens-labels
   exposed-modules:
       MeasureGhc.ByteString
       MeasureGhc.Experiment.BuildPlan
