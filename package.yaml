@@ -20,15 +20,23 @@ default-extensions:
 - DeriveGeneric
 - PartialTypeSignatures
 - DeriveFunctor
+- DeriveTraversable
+- DeriveAnyClass
+- DeriveFunctor
 - TypeApplications
 - ParallelListComp
 - MultiWayIf
+- NamedFieldPuns
+- StandaloneDeriving
+- DerivingStrategies
+- GeneralizedNewtypeDeriving
+- TypeOperators
 
 data-files:
 - data/*
 
 dependencies:
-  base
+- base
 
 library:
   source-dirs: lib
@@ -55,12 +63,37 @@ library:
   - errors
   - transformers
   - reflection
+  - yaml
+  - process
+  - filelock
+  - temporary
+  - aeson
+  - lens-aeson
+  - generic-lens
+  - stackage-curator
+  - Cabal
+  - time
   other-modules:
   - Paths_measure_ghc
+
 executables:
   measure-ghc:
-    source-dirs:      src
-    main:             Main.hs
+    main:             src/Main.hs
     dependencies:
     - measure-ghc
-    - base
+  ghc-shim:
+    main: src/ghc-shim.hs
+    dependencies:
+    - measure-ghc
+    ghc-options:
+    - -rtsopts=ignoreAll
+  haddock-shim:
+    main: src/haddock-shim.hs
+    dependencies:
+    - measure-ghc
+    ghc-options:
+    - -rtsopts=ignoreAll
+  experiment:
+    main: src/experiment.hs
+    dependencies:
+    - measure-ghc

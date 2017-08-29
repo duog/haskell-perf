@@ -4,3 +4,5 @@
 /haddock-shim.lock
 .cabal-sandbox
 cabal.sandbox.config
+measure-ghc/stack
+/bindists

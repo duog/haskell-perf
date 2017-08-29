@@ -1,0 +1,8 @@
+[submodule "foundation"]
+	path = foundation
+	url = https://github.com/duog/foundation
+	ignore = none
+[submodule "stackage-curator"]
+	path = stackage-curator
+	url = https://github.com/duog/stackage-curator
+	ignore = none

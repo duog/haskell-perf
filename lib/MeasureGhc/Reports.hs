@@ -1,6 +1,4 @@
 {-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module MeasureGhc.Reports where
@@ -64,7 +62,8 @@ transformNonEmpty f = \case
 
 
 newtype QueryT m a = QueryT (Strict.WriterT (Seq Text, Seq S.SQLData) m a)
-  deriving (Functor, Applicative, Monad, MonadTrans)
+  deriving stock (Functor)
+  deriving newtype (Applicative, Monad, MonadTrans)
 
 runQueryT
   :: (MonadIO m, S.FromRow b, Monoid c)
