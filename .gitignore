@@ -6,3 +6,4 @@
 cabal.sandbox.config
 measure-ghc/stack
 /bindists
+/work
