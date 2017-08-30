@@ -6,7 +6,7 @@ import System.Directory
 import System.Process
 import System.IO.Temp
 import System.Environment
-import Control.Concurrent.QSem
+import Control.Concurrent.QSemN
 import Data.Generics.Labels()
 import Data.Generics.Product
 import Data.Time.Clock
@@ -122,16 +122,19 @@ main = do
             , let label = mkLabel bindistLabel options_label
             ] $ \(label, ghcBindist@GhcBindist{..}, ghcOptions) -> do
           current_time <- getCurrentTime
-          sem <- newQSem 1
+          jobs_sem <- newQSemN jobs
           let time_string = formatTime defaultTimeLocale (iso8601DateFormat (Just "%H-%M-%S")) current_time
-              stats_dir = workDir </> "stats" </> time_string
-              log_dir = workDir </> "log" </> time_string
+              run_dir = workDir </> "runs" </> time_string
+              stats_dir = run_dir "stats"
+              log_dir = run_dir "logs"
               ghc_bin_dir = ghcs_dir </> T.unpack bindistLabel </> "bin"
               ghc_pkg_file = ghc_bin_dir </> "ghc-pkg"
               ghc_file = ghc_bin_dir </> "ghc"
               statsFile = stats_dir </> "stats"
               statsFileLock = stats_dir </> "lock"
               meta_stats_file = stats_dir </> "meta"
+              curator_log_file = log_dir </> "curator.log"
+              curator_results_file = log_dir </> "curator.results"
 
               shim_settings package hint shimEnabled = ShimSettings
                 { executableFile = ghc_file
@@ -146,22 +149,30 @@ main = do
               write_settings package_name build_type enabled =
                 BS.writeFile shimSettingsFile $
                   J._YAML # shim_settings package_name build_type enabled
-              onBuild package_name build_type inner = do
+              wait_on_dep = bracket_ (signalQSemN jobs_sem 1) (waitQSemN jobs_sem 1)
+              on_setup package_name build_type command inner = do
                 let write_settings' = write_settings package_name (Just build_type)
-                bracket_ (waitQSem sem) (write_settings' False *> signalQSem sem) $ do
-                  write_settings' True
-                  inner
-                    [ "--ghc-options=" <> (T.intercalate " " ghcOptions)
-                    , "--with-ghc=" <> T.pack ghc_shim_file
-                    , "--with-ghc-pkg=" <> T.pack ghc_pkg_file
-                    ]
+                if command == "build"
+                then bracket (signalQSemN jobs_sem 1) (waitQSemN jobs_sem 1) $ do
+                  let enter = waitQSemN jobs_sem jobs
+                      exit = do
+                        write_settings' False
+                        signalQSemN jobs_sem jobs
+                  bracket_ enter exit $ do
+                    write_settings' True
+                    inner $
+                      [ "--ghc-options=" <> (T.intercalate " " ghcOptions)
+                      , "--with-ghc=" <> T.pack ghc_shim_file
+                      , "--with-ghc-pkg=" <> T.pack ghc_pkg_file
+                      ]
+                else inner []
               new_build_plan = adjusted_build_plan
                 & #bpPackages . traverse . #ppConstraints . #pcConfigureArgs <>~ toVector
                   [ "--allow-newer"  -- should limit this and the next to built in packages
                   , "--allow-older"
                   ]
-
-          for_ [stats_dir, log_dir] $ \d -> do
+              log_bytestring h bs = T.hPutStrLn h . fromMaybe "<not utf8> " . preview strictUtf8
+          for_ [run_dir, stats_dir, log_dir] $ \d -> do
             exists <- doesDirectoryExist d
             when exists $ fail $ "Directory exists:" <> d
             createDirectoryIfMissing True d
@@ -181,8 +192,9 @@ main = do
             , label
             , ghcOptions
             }
-
-          performAdjustedBuild new_build_plan jobs install_dir BS.putStr log_dir onBuild >>= traverse T.putStrLn
+          -- we're doing our own job limiting, so we pass a ludicrous value to avoid deadlock
+          withFile curator_log_file WriteMode $ \curator_log_handle -> do
+            performAdjustedBuild new_build_plan 50 install_dir (BS.hPutLine curator_log_handle) log_dir on_setup wait_on_dep >>= T.writeFile curator_results_file . T.unlines
 {- for_ runs $ \(label, ghc, ghc_options) -> do
         try_ $ callProcess "cabal" ["sandbox", "delete"]
         callProcess "cabal" ["sandbox", "init"]

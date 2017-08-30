@@ -1,3 +1,5 @@
+# Summary #
+
 Tool for measuring haddock performance across ghc and haddock versions.
 
 To use:

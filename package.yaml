@@ -31,6 +31,7 @@ default-extensions:
 - DerivingStrategies
 - GeneralizedNewtypeDeriving
 - TypeOperators
+- DefaultSignatures
 
 data-files:
 - data/*
@@ -74,6 +75,7 @@ library:
   - Cabal
   - time
   - generic-lens-labels
+  - ghc-prim
   other-modules:
   - Paths_measure_ghc
 
